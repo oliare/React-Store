@@ -53,10 +53,10 @@ const HomePage = () => {
                             <th scope="col">Full name</th>
                             <th scope="col">Phone</th>
                             <th scope="col">Email</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-
                         {contentList}
                     </tbody>
                 </table>
