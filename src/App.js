@@ -1,17 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
-import {useState} from "react";
-import MainHeader from "./components/containers/header";
+import Layout from './components/containers';
 import HomePage from "./components/home";
 import Accordion from "./components/accordion";
+import { Route, Routes } from 'react-router-dom';
+import RegisterPage from './components/auth/register';
+import NotFountPage from './components/home/pages/404';
 
-function App() {
+const App = () => {
 
     return (
         <>
-            <MainHeader/>
-            <HomePage/>
-            <Accordion/>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<HomePage />} />
+                    <Route path={"register"} element={<RegisterPage />} />
+                    <Route path={"*"} element={<NotFountPage />} />
+                    {/* <Accordion /> */}
+                </Route>
+            </Routes>
         </>
     );
 }

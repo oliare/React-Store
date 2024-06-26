@@ -44,7 +44,6 @@ const HomePage = () => {
 
     return (
         <>
-            <div className="container">
                 <h1 className={"text-center mt-3"}>Users</h1>
                 <table className="table mt-5">
                     <thead>
@@ -60,7 +59,6 @@ const HomePage = () => {
                         {contentList}
                     </tbody>
                 </table>
-            </div>
         </>
     );
 }
