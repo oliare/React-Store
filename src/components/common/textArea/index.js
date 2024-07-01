@@ -1,12 +1,13 @@
-const TextArea = ({ label, field, type }) => {
+const TextArea = ({ label, field, value, onChange, error, className }) => {
     return (
         <>
             <div className="mb-3">
                 <label htmlFor={field} className="form-label">{label}</label>
-                <textarea type={type} className="form-control" id={field} name={field} />
+                <textarea id={field} name={field} value={value} onChange={onChange} className={className}></textarea>
+                {error && (<div className="invalid-feedback">{error}</div>)}
             </div>
         </>
-    )
+    );
 }
 
-export default TextArea
+export default TextArea;

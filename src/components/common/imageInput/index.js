@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ImageInput = ({ label, field, type, defaultImg, newImg, onImageChange }) => {
+const ImageInput = ({ label, field, type, defaultImg, newImg, onChange, error }) => {
     const [preview, setPreview] = useState(defaultImg);
 
     const handleFile = (e) => {
@@ -9,16 +9,16 @@ const ImageInput = ({ label, field, type, defaultImg, newImg, onImageChange }) =
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreview(reader.result);
-                onImageChange(file);
+                onChange(file);
             };
             reader.readAsDataURL(file);
         } else {
             setPreview(defaultImg);
-            onImageChange(null);
+            onChange(null);
         }
     }
 
-    if (newImg === defaultImg && preview !== defaultImg) 
+    if (newImg === defaultImg && preview !== defaultImg)
         setPreview(defaultImg);
 
     return (
@@ -33,7 +33,9 @@ const ImageInput = ({ label, field, type, defaultImg, newImg, onImageChange }) =
                 )}
                 <div className="col-md-9 mb-3">
                     <label htmlFor={field} className="form-label">{label}</label>
-                    <input type={type} id={field} name={field} className="form-control" accept="image/*" onChange={handleFile} />
+                    <input type={type} id={field} name={field} onChange={handleFile}
+                        className={`form-control ${error ? 'is-invalid' : ''}`} accept="image/*" />
+                    {error && (<div className="invalid-feedback"> {error} </div>)}
                 </div>
             </div>
         </>
