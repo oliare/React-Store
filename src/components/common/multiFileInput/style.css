@@ -1,0 +1,18 @@
+.image-preview {
+    position: relative;
+
+}
+
+.remove-button {
+    position: absolute;
+    border: none;
+    background-color: transparent;
+    top: 0px;
+    right: 15px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

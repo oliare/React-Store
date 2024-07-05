@@ -1,45 +1,35 @@
-import React, { useState } from 'react';
+import userImage from "../../../assets/images/no_img.png";
+import classNames from "classnames";
 
-const ImageInput = ({ label, field, type, defaultImg, newImg, onChange, error }) => {
-    const [preview, setPreview] = useState(defaultImg);
-
-    const handleFile = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result);
-                onChange(file);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            setPreview(defaultImg);
-            onChange(null);
-        }
-    }
-
-    if (newImg === defaultImg && preview !== defaultImg)
-        setPreview(defaultImg);
-
+const ImageInput = ({ label, field, value, error, onChange }) => {
+    const img = value == null ? userImage : URL.createObjectURL(value);
+    console.log("error", error);
     return (
         <>
-            <div className="row d-flex justify-content-between">
-                {preview && (
-                    <div className="col-md-3 mb-3 text-center">
-                        <div className="square-preview">
-                            <img src={preview} alt="Preview" className="preview-image" style={{ maxHeight: "110px", maxWidth: "110px" }} />
-                        </div>
+            <div className="mb-3">
+                <div className="row">
+                    <div className="col-md-3">
+                        <img src={img} alt="" className={"img-fluid"} style={{ maxHeight: "110px", maxWidth: "110px" }} />
                     </div>
-                )}
-                <div className="col-md-9 mb-3">
-                    <label htmlFor={field} className="form-label">{label}</label>
-                    <input type={type} id={field} name={field} onChange={handleFile}
-                        className={`form-control ${error ? 'is-invalid' : ''}`} accept="image/*" />
-                    {error && (<div className="invalid-feedback"> {error} </div>)}
+                    <div className="col-md-9">
+                        <label htmlFor={field} className="form-label">{label}</label>
+                        <input type="file" id={field} name={field} onChange={onChange} aria-describedby="emailHelp"
+                            className={classNames("form-control", {
+                                "is-invalid": error
+                            })} />
+                        {error &&
+                            <div className="invalid-feedback">
+                                {error}
+                            </div>
+                        }
+                    </div>
                 </div>
+
             </div>
+
         </>
     );
 }
+
 
 export default ImageInput;
