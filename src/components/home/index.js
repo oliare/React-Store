@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../../authContext"
 
 const HomePage = () => {
     const [list, setList] = useState([
@@ -17,9 +18,13 @@ const HomePage = () => {
             email: "iniy@gmail.com"
         }
     ]);
+    const { login } = useContext(AuthContext)
+
+
     const handlerDelete = (id) => {
         setList(list.filter(i => i.id !== id));
     }
+
 
     const contentList = list.map((item) =>
         <tr key={item.id}>
@@ -44,21 +49,24 @@ const HomePage = () => {
 
     return (
         <>
-                <h1 className={"text-center mt-3"}>Users</h1>
-                <table className="table mt-5">
-                    <thead>
-                        <tr>
-                            <th scope="col">Photo</th>
-                            <th scope="col">Full name</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Email</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {contentList}
-                    </tbody>
-                </table>
+            <h1 className={"text-center mt-3"}>Users</h1>
+            <button className="btn btn-dark" onClick={() => { login({ name: "Ivan" }) }}>
+                Login
+            </button>
+            <table className="table mt-5">
+                <thead>
+                    <tr>
+                        <th scope="col">Photo</th>
+                        <th scope="col">Full name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {contentList}
+                </tbody>
+            </table>
         </>
     );
 }
