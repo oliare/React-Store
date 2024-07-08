@@ -48,7 +48,6 @@ const ImageInput = ({ label, field, value, error, touched, onChange }) => {
         }
     };
 
-
     const handleRotation = () => {
         if (cropperRef.current && cropperRef.current.cropper) {
             cropperRef.current.cropper.rotate(90);
