@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import RegisterPage from './components/auth/register';
 import NotFountPage from "./components/pages/404";
 import PizzaCreatePage from './components/pizza/create';
+import NovaPoshtaPage from './components/novaPoshta/index';
 import { useState } from 'react';
 import { AuthContext, initState } from './authContext';
 
@@ -28,6 +29,7 @@ const App = () => {
                     <Route path="/" element={<Layout />}>
                         <Route index element={<HomePage />} />
                         <Route path={"register"} element={<RegisterPage />} />
+                        <Route path={"novaPoshta"} element={<NovaPoshtaPage />} />
 
                         <Route path={"pizza"}>
                             <Route path={"create"} element={<PizzaCreatePage />} />

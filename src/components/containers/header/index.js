@@ -23,6 +23,9 @@ const MainHeader = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link" aria-current="page" to="/pizza/create">Add</Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" aria-current="page" to="/novaPoshta">Nova poshta</Link>
+                                </li>
                             </ul>
 
                             {isAuth ?
