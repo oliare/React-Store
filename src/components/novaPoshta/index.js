@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import Select from 'react-select';
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -8,23 +9,26 @@ import "leaflet.markercluster/dist/leaflet.markercluster.js";
 import "leaflet.awesome-markers/dist/leaflet.awesome-markers.css";
 import "leaflet.awesome-markers";
 
+
 const NovaPoshtaPage = () => {
+  const apiKey = '63aa362a44e812e38243bd8fb803b606';
+
   const [areas, setAreas] = useState([]);
   const [cities, setCities] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [selectedArea, setSelectedArea] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
+
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
-  const apiKey = '63aa362a44e812e38243bd8fb803b606';
 
   useEffect(() => {
     displayMap([]);
   }, []);
 
   useEffect(() => {
-    async function fetchAreas() {
+    const fetchAreas = async () => {
       const areasData = await getAreas(apiKey);
       setAreas(areasData);
     }
@@ -33,8 +37,8 @@ const NovaPoshtaPage = () => {
 
   useEffect(() => {
     if (selectedArea) {
-      async function fetchCities() {
-        const citiesData = await getCities(apiKey, selectedArea);
+      const fetchCities = async () => {
+        const citiesData = await getCities(selectedArea.Ref);
         setCities(citiesData);
       }
       fetchCities();
@@ -43,8 +47,8 @@ const NovaPoshtaPage = () => {
 
   useEffect(() => {
     if (selectedCity) {
-      async function fetchWarehouses() {
-        const warehousesData = await getWarehouses(apiKey, selectedCity);
+      const fetchWarehouses = async () => {
+        const warehousesData = await getWarehouses(selectedCity.Ref);
         setWarehouses(warehousesData);
         displayMap(warehousesData);
       }
@@ -52,7 +56,7 @@ const NovaPoshtaPage = () => {
     }
   }, [selectedCity]);
 
-  async function getAreas(apiKey) {
+  const getAreas = async () => {
     try {
       const response = await axios.post('https://api.novaposhta.ua/v2.0/json/', {
         apiKey: apiKey,
@@ -65,7 +69,7 @@ const NovaPoshtaPage = () => {
     }
   }
 
-  async function getCities(apiKey, areaRef) {
+  const getCities = async (areaRef) => {
     try {
       const response = await axios.post('https://api.novaposhta.ua/v2.0/json/', {
         apiKey: apiKey,
@@ -81,7 +85,7 @@ const NovaPoshtaPage = () => {
     }
   }
 
-  async function getWarehouses(apiKey, cityRef) {
+  const getWarehouses = async (cityRef) => {
     try {
       const response = await axios.post('https://api.novaposhta.ua/v2.0/json/', {
         apiKey: apiKey,
@@ -97,17 +101,13 @@ const NovaPoshtaPage = () => {
     }
   }
 
-  function displayMap(warehouses) {
-    if (mapRef.current) {
-      mapRef.current.remove();
-    }
+  const displayMap = (warehouses) => {
+    if (mapRef.current) mapRef.current.remove();
 
     const map = L.map('map').setView([48.3794, 31.1656], 6);
     mapRef.current = map;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
 
     const markers = L.markerClusterGroup();
 
@@ -123,43 +123,79 @@ const NovaPoshtaPage = () => {
         })
       }).bindPopup(popupContent);
 
+      marker.on('click', () => { zoom(warehouse); });
+
       markers.addLayer(marker);
-      markersRef.current.push(marker);
+      markersRef.current.push({ marker: marker, ref: warehouse.Ref });
     });
 
     map.addLayer(markers);
   }
-  
+
+  const zoom = i => {
+    const marks = markersRef.current.find(m => m.ref === i.Ref);
+    if (marks) mapRef.current.flyTo(marks.marker.getLatLng(), 15);
+  };
+
+  const style = {
+    control: (s) => ({
+      ...s,
+      width: 290,
+      marginLeft: 10
+    }),
+  };
+
   return (
     <div>
-      <h1 className="mt-4">Get data from Nova Poshta</h1>
+      <h1 className="mt-4">Get data from Nova Post</h1>
 
-      <div className="primary-button mt-4">
-        <span>
-          <em>Select Area:</em>
-          <select onChange={(e) => setSelectedArea(e.target.value)} style={{ marginLeft: '10px' }}>
-            <option value="">-- not selected</option>
-            {areas.map(area => (
-              <option key={area.Ref} value={area.Ref}>{area.Description}</option>
-            ))}
-          </select>
-        </span>
+      <div className={'d-flex mt-4'}>
+        <div className={`d-flex align-items-center  ${selectedArea ? 'd-flex me-5' : ''}`}>
+          <em><strong>Select Area:</strong></em>
+          <Select
+            value={selectedArea == null ? "" : selectedArea}
+            onChange={(selectedOption) => {
+              setSelectedArea(selectedOption);
+              setSelectedCity(null);
+            }}
+            getOptionLabel={option => option.Description}
+            getOptionValue={option => option.Ref}
+            options={areas}
+            styles={style}
+          />
+        </div>
 
         {selectedArea && (
-          <span style={{ marginLeft: '20px' }}>
-            <em>Select City:</em>
-            <select onChange={(e) => setSelectedCity(e.target.value)} style={{ marginLeft: '10px' }}>
-              <option value="">-- not selected</option>
-              {cities.map(city => (
-                <option key={city.Ref} value={city.Ref}>{city.Description}</option>
-              ))}
-            </select>
-          </span>
+          <div className="d-flex align-items-center flex-fill">
+            <em><strong>Select City:</strong></em>
+            <Select
+              value={selectedCity == null ? "" : selectedCity}
+              onChange={(i) => {
+                setSelectedCity(i);
+              }}
+              getOptionLabel={option => option.Description}
+              getOptionValue={option => option.Ref}
+              options={cities}
+              styles={style}
+            />
+          </div>
+
         )}
-        
+        {selectedCity && (
+          <div className="d-flex align-items-center">
+            <em><strong>Select Warehouse:</strong></em>
+            <Select
+              getOptionLabel={option => option.Description}
+              getOptionValue={option => option.Ref}
+              options={warehouses}
+              styles={style}
+              onChange={(i) => zoom(i)}
+            />
+          </div>
+        )}
       </div>
 
-      <div id="map" style={{ height: "490px", marginTop: "20px" }}></div>
+      <div id="map" style={{ height: "490px", marginTop: "20px", zIndex: 0 }}></div>
     </div>
   );
 };
