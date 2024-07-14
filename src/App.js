@@ -9,6 +9,8 @@ import PizzaCreatePage from './components/pizza/create';
 import NovaPoshtaPage from './components/novaPoshta/index';
 import { useState } from 'react';
 import { AuthContext, initState } from './authContext';
+import CounterPage from './components/counter';
+import ProductsPage from './components/products';
 
 const App = () => {
 
@@ -30,6 +32,8 @@ const App = () => {
                         <Route index element={<HomePage />} />
                         <Route path={"register"} element={<RegisterPage />} />
                         <Route path={"novaPoshta"} element={<NovaPoshtaPage />} />
+                        <Route path={"counter"} element={<CounterPage />} />
+                        <Route path={"products"} element={<ProductsPage />} />
 
                         <Route path={"pizza"}>
                             <Route path={"create"} element={<PizzaCreatePage />} />

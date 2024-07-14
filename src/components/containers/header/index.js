@@ -1,10 +1,16 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom"
+import { useSelector } from "react-redux";
 import { AuthContext } from "../../../authContext"
 
 
 const MainHeader = () => {
+
     const { isAuth, user, logout } = useContext(AuthContext)
+
+    const count = useSelector((state) => state.counter.value);
+    const cart = useSelector((state) => state.products.carts);
+
     console.log("isAuth ", isAuth, user)
     return (
         <>
@@ -26,6 +32,15 @@ const MainHeader = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link" aria-current="page" to="/novaPoshta">Nova poshta</Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" aria-current="page" to="/counter">Redux</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" aria-current="page" to="/products">
+                                        <i className="bi bi-cart"> </i>
+                                        <span className="badge bg-danger">{cart}</span>
+                                    </Link>
+                                </li>
                             </ul>
 
                             {isAuth ?
@@ -34,8 +49,7 @@ const MainHeader = () => {
                                         <a className="nav-link" aria-current="page" href="/profile">{user.name}</a>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" to="/logout" onClick={(e)=>
-                                        {
+                                        <Link className="nav-link" to="/logout" onClick={(e) => {
                                             e.preventDefault();
                                             logout();
                                         }}>Logout</Link>
@@ -44,7 +58,7 @@ const MainHeader = () => {
                                 :
                                 <ul className="navbar-nav ">
                                     <li className="nav-item">
-                                        <a className="nav-link" aria-current="page" href="#">Login</a>
+                                        <a className="nav-link" aria-current="page" href="/login">Login {count}</a>
                                     </li>
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/register">Signin</Link>
@@ -59,4 +73,5 @@ const MainHeader = () => {
         </>
     )
 }
+
 export default MainHeader;
